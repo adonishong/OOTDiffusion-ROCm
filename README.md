@@ -1,3 +1,13 @@
+# Adapt OOTDiffusion to AMD RDNA 3 and ROCm platform
+
+The primary purpose of forking this project is to adapt OOTDiffusion for the ROCm platform. Although several issues were encountered along the way, a summary of the results indicates that without specific optimizations, the attention computation scale required by modern AIGC applications cannot be completed within the 48GB memory of the W7900. Therefore, relevant optimizations are necessary. Currently, the main optimization schemes are either xformer or flash attention, but the existing xformer and flash attention code in the pip library do not support ROCm.
+
+The final solution consists of two parts:
+1. Install the flash-attention support provided officially. It is important to note that the default branch of the official flash-attention code repository does not support the W7900 hardware platform; the special howiejay/navi_support branch must be used.
+2. Integrate the flash-attention computation process into the OOTDiffusion code. The main approach here is to complete the relevant process based on sdpa_hijack, with the primary content referenced in the `run/run_ootd.py` code.
+
+**From here on, the content is from the Readme.md of the OOTDiffusion project.**
+
 # OOTDiffusion
 This repository is the official implementation of OOTDiffusion
 

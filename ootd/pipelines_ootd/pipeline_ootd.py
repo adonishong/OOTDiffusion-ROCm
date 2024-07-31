@@ -15,7 +15,7 @@
 # Modified by Yuhao Xu for OOTDiffusion (https://github.com/levihsu/OOTDiffusion)
 import inspect
 from typing import Any, Callable, Dict, List, Optional, Union
-
+import time
 import numpy as np
 import PIL.Image
 import torch
@@ -250,6 +250,7 @@ class OotdPipeline(DiffusionPipeline, TextualInversionLoaderMixin, LoraLoaderMix
             )
 
         # 0. Check inputs
+        print("ootd pipeline checking inputs")
         self.check_inputs(
             prompt,
             callback_steps,
@@ -357,7 +358,9 @@ class OotdPipeline(DiffusionPipeline, TextualInversionLoaderMixin, LoraLoaderMix
             encoder_hidden_states=prompt_embeds,
             return_dict=False,
         )
-
+        
+        # print("going to inference in step", num_inference_steps)
+        # time.sleep(3)
         with self.progress_bar(total=num_inference_steps) as progress_bar:
             for i, t in enumerate(timesteps):
                 latent_model_input = torch.cat([latents] * 2) if self.do_classifier_free_guidance else latents
@@ -369,6 +372,8 @@ class OotdPipeline(DiffusionPipeline, TextualInversionLoaderMixin, LoraLoaderMix
 
                 spatial_attn_inputs = spatial_attn_outputs.copy()
 
+                # print("going to call unet_vton")
+                # time.sleep(3)
                 # predict the noise residual
                 noise_pred = self.unet_vton(
                     latent_vton_model_input,
